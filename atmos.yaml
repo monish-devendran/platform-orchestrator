@@ -1,0 +1,35 @@
+base_path: ""
+
+components:
+  terraform:
+    # Can also be set using 'ATMOS_COMPONENTS_TERRAFORM_BASE_PATH' ENV var, or '--terraform-dir' command-line argument
+    # Supports both absolute and relative paths
+    base_path: "components/terraform"
+    # Can also be set using 'ATMOS_COMPONENTS_TERRAFORM_APPLY_AUTO_APPROVE' ENV var
+    apply_auto_approve: false
+    # Can also be set using 'ATMOS_COMPONENTS_TERRAFORM_DEPLOY_RUN_INIT' ENV var, or '--deploy-run-init' command-line argument
+    deploy_run_init: true
+    # Can also be set using 'ATMOS_COMPONENTS_TERRAFORM_INIT_RUN_RECONFIGURE' ENV var, or '--init-run-reconfigure' command-line argument
+    init_run_reconfigure: true
+    # Can also be set using 'ATMOS_COMPONENTS_TERRAFORM_AUTO_GENERATE_BACKEND_FILE' ENV var, or '--auto-generate-backend-file' command-line argument
+    auto_generate_backend_file: false
+
+
+stacks:
+  # Can also be set using 'ATMOS_STACKS_BASE_PATH' ENV var, or '--config-dir' and '--stacks-dir' command-line arguments
+  # Supports both absolute and relative paths
+  base_path: "stacks"
+  # Can also be set using 'ATMOS_STACKS_INCLUDED_PATHS' ENV var (comma-separated values string)
+  included_paths:
+    - "deploy/**/*"
+  # Can also be set using 'ATMOS_STACKS_EXCLUDED_PATHS' ENV var (comma-separated values string)
+  excluded_paths:
+    - "**/_defaults.yaml"
+  # Can also be set using 'ATMOS_STACKS_NAME_PATTERN' ENV var
+  name_pattern: "{stage}"
+
+
+logs:
+  file: "/dev/stdout"
+  # Supported log levels: Trace, Debug, Info, Warning, Off
+  level: Info

@@ -1,0 +1,11 @@
+vars:
+  stage: dev
+
+import:
+  - catalog/cloudfunctions/default
+
+components:
+  terraform:
+    customer1-cloudfunction:
+        metadata:
+          component: cloudfunctions

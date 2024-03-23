@@ -1,0 +1,7 @@
+components:
+  terraform:
+    cloudfunctions:
+      metadata:
+        component: cloudfunctions
+      vars:
+        enabled: true

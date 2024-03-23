@@ -1,0 +1,24 @@
+# vars:
+#   stage: dev
+
+# import:
+#   - orgs/catalog/cloudfunctions/default
+
+# components:
+#   terraform:
+#     cloudfunctions/default:
+
+vars:
+  stage: dev
+
+import:
+  - catalog/myapp/defaults
+
+components:
+  terraform:
+    custom-app1:
+      metadata:
+        component: myapp
+      vars:
+        location: San Jose
+        lang: en
