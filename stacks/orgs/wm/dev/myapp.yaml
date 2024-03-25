@@ -1,0 +1,17 @@
+import:
+  - orgs/wm/dev/_defaults
+  - catalog/myapp/defaults
+
+vars:
+  tenant: myapp
+
+components:
+  terraform:
+    custom-app1:
+      metadata:
+        component: myapp
+        inherits:
+          - myapp/defaults
+      vars:
+        location: Los Angeles
+        lang: en

@@ -14,19 +14,18 @@ components:
     # Can also be set using 'ATMOS_COMPONENTS_TERRAFORM_AUTO_GENERATE_BACKEND_FILE' ENV var, or '--auto-generate-backend-file' command-line argument
     auto_generate_backend_file: false
 
-
 stacks:
   # Can also be set using 'ATMOS_STACKS_BASE_PATH' ENV var, or '--config-dir' and '--stacks-dir' command-line arguments
   # Supports both absolute and relative paths
   base_path: "stacks"
   # Can also be set using 'ATMOS_STACKS_INCLUDED_PATHS' ENV var (comma-separated values string)
   included_paths:
-    - "deploy/**/*"
+    - "orgs/**/*"
   # Can also be set using 'ATMOS_STACKS_EXCLUDED_PATHS' ENV var (comma-separated values string)
   excluded_paths:
     - "**/_defaults.yaml"
   # Can also be set using 'ATMOS_STACKS_NAME_PATTERN' ENV var
-  name_pattern: "{stage}"
+  name_pattern: "{tenant}-{stage}"
 
 
 logs:

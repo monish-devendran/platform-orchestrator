@@ -1,0 +1,23 @@
+import:
+  # Import the dev defaults
+  - orgs/wm/dev/_defaults
+  # Import the defaults for the Atmos components from the catalog into the stack
+  - catalog/pubsub/defaults
+
+# Common variables for all components in this GCP project
+vars:
+  tenant: pubsub
+  project_id: "cf-source-416306"
+
+components:
+  terraform:
+    pubsub/customer1/topic:
+      metadata:
+        component: pubsub
+        inherits:
+          - pubsub/defaults
+      vars:
+        topic_name: customer1
+        labels:
+          key1: value1
+          key2: value2

@@ -1,18 +1,9 @@
-# components:
-#   terraform:
-#     myapp:
-#       vars:
-#         location: San Fransisco
-#         lang: en
-#         format: ''
-#         options: '0'
-#         units: m
 components:
   terraform:
-    myapp/defaults:
+    pubsub/defaults:
       metadata:
         # Point to the Terraform component in `components/terraform` folder
-        component: myapp
+        component: pub-sub
         # Setting `metadata.type: abstract` makes the component `abstract` (similar to OOP abstract classes, which can't be instantiated),
         # explicitly prohibiting the component from being deployed.
         # `atmos terraform apply` and `atmos terraform deploy` will fail with an error that the component cannot be provisioned.
@@ -20,8 +11,3 @@ components:
         type: abstract
       vars:
         enabled: true
-        location: San Fransisco
-        lang: en
-        format: ''
-        options: '0'
-        units: m
