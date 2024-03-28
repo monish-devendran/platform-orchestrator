@@ -9,6 +9,7 @@ vars:
   tenant: pubsub
   project_id: "cf-source-416306"
 
+# https://yaml-multiline.info/
 components:
   terraform:
     pubsub/customer1/topic:
@@ -21,3 +22,25 @@ components:
         labels:
           key1: value1
           key2: value2
+
+
+
+
+# components:
+#   terraform:
+#     my-component:
+#       settings:
+#         my-config:
+#           c1: "a"
+#           c2: "b"
+#           c3:
+#             d1: 1
+#             d2: 2
+#       vars:
+#         var2:
+#            a: 1
+#            b: 2
+#         var1: "{{ toJson .vars.var2 }}"
+#         var3: "{{ toJson .settings.my-config }}"
+#         var4: |
+#            <YAML or JSON here>
