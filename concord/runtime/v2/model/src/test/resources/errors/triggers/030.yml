@@ -1,5 +1,0 @@
-triggers:
-  - cron:
-      spec: "*"
-      entryPoint: "foo"
-      timezone: "test"

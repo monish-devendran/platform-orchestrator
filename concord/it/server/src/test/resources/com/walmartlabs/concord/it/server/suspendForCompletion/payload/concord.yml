@@ -1,4 +1,0 @@
-flows:
-  default:
-  - ${sleep.ms(3000)}
-  - log: "Hello from child process."

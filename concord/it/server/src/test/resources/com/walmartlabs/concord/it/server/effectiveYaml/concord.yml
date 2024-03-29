@@ -1,9 +1,0 @@
-configuration:
-  runtime: concord-v2
-
-flows:
-  default:
-    - log: "default"
-
-  test:
-    - log: "test"

@@ -1,8 +1,0 @@
-flows:
-  onPush:
-    - log: "Hello, ${requestInfo.headers.Host}!"
-
-triggers:
-  - github:
-      entryPoint: "onPush"
-      version: 2

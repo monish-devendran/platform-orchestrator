@@ -1,6 +1,0 @@
-flows:
-  default:
-    - script: groovy
-      body: |
-        throw new RuntimeException("kaboom!")
-      in: ${inExpr}

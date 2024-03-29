@@ -1,8 +1,0 @@
-flows:
-  default:
-    - set:
-        phrase: "mama mia!"
-    - script: "index.js"
-      in:
-        esVersion: 2022
-    - log: "${json}"

@@ -1,6 +1,0 @@
-flows:
-  main:
-  - log: "value=${crypto.exportAsString(secretName, pwd)}"
-
-variables:
-  entryPoint: main

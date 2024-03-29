@@ -1,8 +1,0 @@
-flows:
-  onPush:
-    - log: "onPush: ${event}"
-
-triggers:
-  - github:
-      entryPoint: "onPush"
-      version: 2

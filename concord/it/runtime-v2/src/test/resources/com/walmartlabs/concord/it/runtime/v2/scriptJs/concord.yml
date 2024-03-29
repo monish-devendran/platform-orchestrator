@@ -1,8 +1,0 @@
-configuration:
-  runtime: concord-v2
-
-flows:
-  default:
-    - script: js
-      body: |
-        print("matches: " + arg.matches(pattern));

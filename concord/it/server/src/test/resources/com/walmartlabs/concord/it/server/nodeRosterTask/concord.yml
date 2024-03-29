@@ -1,8 +1,0 @@
-flows:
-  default:
-  - task: nodeRoster
-    in:
-      action: hostsWithArtifacts
-      artifactPattern: "${artifactUrl}"
-
-  - log: "${result}"

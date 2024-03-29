@@ -1,3 +1,0 @@
-flows:
-  onFailure:
-    - log: "oh, handled"

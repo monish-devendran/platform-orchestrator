@@ -1,7 +1,0 @@
-configuration:
-  debug: true
-
-flows:
-  default:
-    - log: "Hello, ${name}"
-    - expr: "${sleep.ms(10)}"

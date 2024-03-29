@@ -1,8 +1,0 @@
-flows:
-  main:
-    - task: project
-      in:
-        action: create
-        org: Default
-        name: ProjectName
-      name: "Test name"

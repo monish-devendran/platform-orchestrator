@@ -1,8 +1,0 @@
-flows:
-  default:
-    - call: test
-
-  test:
-    - call: logFlow
-      retry:
-        times: ${undefined}

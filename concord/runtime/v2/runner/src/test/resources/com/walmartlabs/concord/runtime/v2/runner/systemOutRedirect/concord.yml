@@ -1,5 +1,0 @@
-flows:
-  default:
-    - script: groovy
-      body: |
-        System.out.println("System.out in a script")

@@ -1,5 +1,0 @@
-configuration:
-  entryPoint: "main-test"
-  template:
-    - "t1"
-    - "t2"

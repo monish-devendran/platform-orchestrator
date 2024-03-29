@@ -1,4 +1,0 @@
-configuration:
-  entryPoint: "main-test"
-  dependencies:
-    - 1

@@ -1,3 +1,0 @@
-flows:
-  default:
-      - log: "${crypto.exportAsString(orgName, secretName, storePassword)}"

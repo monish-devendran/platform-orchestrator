@@ -1,3 +1,0 @@
-flows:
-  flowFromTemplate:
-    - log: "Hello from Template DIR, ${name}!"

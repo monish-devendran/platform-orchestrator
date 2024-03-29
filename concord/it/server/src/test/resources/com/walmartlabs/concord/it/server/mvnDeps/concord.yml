@@ -1,9 +1,0 @@
-flows:
-  default:
-  - script: groovy
-    body: |
-      println "Hello, Concord!"
-
-configuration:
-  dependencies:
-  - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.17"

@@ -1,8 +1,0 @@
-configuration:
-  runtime: "concord-v2"
-
-flows:
-  default:
-    - checkpoint: my-first-checkpoint
-    - checkpoint: my-second-checkpoint
-    - log: "Checkpoint done!"

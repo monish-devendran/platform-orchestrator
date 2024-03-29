@@ -1,6 +1,0 @@
-flows:
-  default:
-  - log: "Taking a nap..."
-  - ${sleep.ms(60000)}
-  - log: "Done napping!"
-

@@ -1,9 +1,0 @@
-flows:
-  default:
-    - switch: "${myVar}"
-      red:
-        - log: "It's red!"
-      green:
-        - log: "It's definitely green"
-      default:
-        - log: "I don't know what it is"

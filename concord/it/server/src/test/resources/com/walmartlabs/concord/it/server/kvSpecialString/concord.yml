@@ -1,4 +1,0 @@
-flows:
-  default:
-    - ${kv.putString(testKey, "#aaa#bbb")}
-    - log: ${kv.getString(testKey)}

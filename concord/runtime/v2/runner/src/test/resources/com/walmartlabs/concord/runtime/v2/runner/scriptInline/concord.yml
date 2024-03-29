@@ -1,7 +1,0 @@
-flows:
-  default:
-    - script: js
-      body: |
-        var x = {a: 1};
-        execution.variables().set('x', x);
-    - log: "x: ${x.a}"

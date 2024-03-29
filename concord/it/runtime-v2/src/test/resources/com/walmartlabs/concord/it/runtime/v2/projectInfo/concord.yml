@@ -1,8 +1,0 @@
-configuration:
-  runtime: "concord-v2"
-
-flows:
-  default:
-    - script: js
-      body: |
-        log.info("project info: {}", context.processConfiguration().projectInfo());

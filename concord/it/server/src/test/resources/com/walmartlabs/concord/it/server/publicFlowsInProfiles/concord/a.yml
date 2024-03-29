@@ -1,8 +1,0 @@
-profiles:
-  profileA:
-    publicFlows:
-      - "flowA"
-
-flows:
-  flowA:
-    - log: "Hello A!"

@@ -1,8 +1,0 @@
-flows:
-  default:
-    - form: myForm
-      yield: true
-
-forms:
-  myForm:
-    - myField: { type: "string", label: "${x}" }

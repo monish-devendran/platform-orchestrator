@@ -1,8 +1,0 @@
-configuration:
-  runtime: concord-v2
-
-flows:
-  default:
-    - log: "Child process, nullValue: '${nullValue}'"
-    - log: "Child process, nullValue == null: '${nullValue == null}'"
-    - log: "Child process, hasVariable('nullValue'): ${hasVariable('nullValue')}"

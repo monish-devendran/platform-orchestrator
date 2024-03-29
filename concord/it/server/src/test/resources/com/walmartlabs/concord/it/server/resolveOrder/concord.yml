@@ -1,7 +1,0 @@
-flows:
-  default:
-  - log: "sleep time: ${sleep}"
-
-variables:
-  arguments:
-    sleep: "1 hour"

@@ -1,6 +1,0 @@
----
-- hosts: local
-  tasks:
-  - fail:
-      msg: "echo {{ msg }}"
-    ignore_errors: yes

@@ -1,7 +1,0 @@
-flows:
-  default:
-    - throw: "default flow throws an error"
-
-  setHello:
-    - set:
-        xyz: "Hello, ${name}!"

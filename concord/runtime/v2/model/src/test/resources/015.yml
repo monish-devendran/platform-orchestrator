@@ -1,5 +1,0 @@
-resources:
-  concord:
-    - "glob:abc"
-    - "regex:boo"
-    - "concord/myfile.yml"

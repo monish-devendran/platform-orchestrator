@@ -1,8 +1,0 @@
-flows:
-  default:
-    - call: faulty
-      error:
-        - log: "error occurred: ${lastError}"
-
-  faulty:
-    - throw: "BOO"

@@ -1,7 +1,0 @@
-configuration:
-  runtime: "concord-v2"
-
-flows:
-  default:
-  - ${log.info('log from expression short')}
-  - expr: "${log.info('log from expression full form')}"

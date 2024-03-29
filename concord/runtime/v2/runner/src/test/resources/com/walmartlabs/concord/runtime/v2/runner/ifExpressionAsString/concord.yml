@@ -1,7 +1,0 @@
-flows:
-  default:
-    - if: "${myVar.str}"
-      then:
-        - log: "it's true"
-      else:
-        - log: "it's not true"

@@ -1,7 +1,0 @@
-flows:
-  default:
-    - if: "${myVar.a}"
-      then:
-        - log: "it's not null"
-      else:
-        - log: "it's null"

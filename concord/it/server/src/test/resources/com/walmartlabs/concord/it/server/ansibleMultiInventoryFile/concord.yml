@@ -1,8 +1,0 @@
-flows:
-  default:
-    - task: ansible
-      in:
-        playbook: playbook/hello.yml
-        inventoryFile:
-          - "aaa.ini"
-          - "bbb.ini"

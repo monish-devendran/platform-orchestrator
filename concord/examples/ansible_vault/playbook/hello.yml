@@ -1,6 +1,0 @@
----
-- hosts: local
-  tasks:
-  - debug:
-      msg: "Let me tell you a secret: {{ mySecret }}"
-      verbosity: 0

@@ -1,7 +1,0 @@
-flows:
-  default:
-    - log: "Hello, default flow!"
-    - call: ${flowName}
-
-  myFlow:
-    - log: "Hello, myFlow flow!"

@@ -1,8 +1,0 @@
-flows:
-  default:
-    - task: faultyTask2
-      ignoreErrors: true
-      out: result
-
-    - log: "ok: ${result.ok}"
-    - log: "error: ${result.error}"

@@ -1,2 +1,0 @@
-main:
-  - smtp: [ "${smtpParams}", "${mailParams}" ]

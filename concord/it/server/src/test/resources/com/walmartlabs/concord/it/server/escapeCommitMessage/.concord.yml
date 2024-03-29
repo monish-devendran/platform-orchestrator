@@ -1,7 +1,0 @@
-flows:
-  default:
-    - log: "Hello, ${name}"
-
-variables:
-  arguments:
-    name: "Vasia"

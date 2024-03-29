@@ -1,6 +1,0 @@
-flows:
-  default:
-  - task: log
-    in:
-      msg: ${item}
-    withItems: ${myItems}

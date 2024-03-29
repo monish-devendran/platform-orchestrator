@@ -1,9 +1,0 @@
----
-- hosts: all
-  tasks:
-    - name: ping
-      ping:
-
-    - name: test dzdo
-      command: whoami
-      become: yes

@@ -1,4 +1,0 @@
-flows:
-  default:
-    - log: "${decryptedValue}"
-    - log: "We got ${crypto.encryptString(projectInfo.orgName, projectInfo.projectName, decryptedValue)}"

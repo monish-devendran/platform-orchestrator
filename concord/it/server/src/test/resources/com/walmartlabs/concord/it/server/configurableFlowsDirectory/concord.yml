@@ -1,6 +1,0 @@
-flows:
-  default:
-  - call: externalFlow
-
-resources:
-  flows: myFlows

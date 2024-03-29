@@ -1,8 +1,0 @@
-configuration:
-  runtime: "concord-v2"
-
-flows:
-  default:
-    - expr: ${resource.asJson('sample.json')}
-      out: jsonObj
-    - log: "Hello ${jsonObj.name}!"

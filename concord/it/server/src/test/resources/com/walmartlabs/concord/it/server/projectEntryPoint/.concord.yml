@@ -1,6 +1,0 @@
-flows:
-  main:
-  - log: "Hello, Concord"
-
-variables:
-  entryPoint: main

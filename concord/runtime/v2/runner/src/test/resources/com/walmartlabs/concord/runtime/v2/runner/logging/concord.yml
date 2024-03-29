@@ -1,4 +1,0 @@
-flows:
-  default:
-    - log: "Hello!"
-    - task: "loggingExample"

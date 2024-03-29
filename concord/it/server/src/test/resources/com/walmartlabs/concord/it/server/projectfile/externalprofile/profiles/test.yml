@@ -1,4 +1,0 @@
-test:
-  variables:
-    arguments:
-      name: "world"

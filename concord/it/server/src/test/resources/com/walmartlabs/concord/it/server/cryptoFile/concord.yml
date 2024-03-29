@@ -1,6 +1,0 @@
-flows:
-  default:
-  - set:
-      path: ${crypto.exportAsFile(secretName, pwd)}
-  - log: "Path ${path}"
-  - log: "We got ${resource.asString(path)}"

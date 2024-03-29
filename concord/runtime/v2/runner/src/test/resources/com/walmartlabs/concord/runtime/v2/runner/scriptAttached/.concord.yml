@@ -1,5 +1,0 @@
-flows:
-  default:
-    - script: "scripts/myscript.js"
-    - log: "x: ${x.a}"
-

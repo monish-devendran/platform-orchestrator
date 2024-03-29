@@ -1,8 +1,0 @@
-flows:
-  default:
-  - docker: library/alpine
-    cmd: echo "Hello, ${name}"
-
-configuration:
-  arguments:
-    name: "world"

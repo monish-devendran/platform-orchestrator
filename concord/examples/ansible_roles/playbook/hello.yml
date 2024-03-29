@@ -1,5 +1,0 @@
----
-- hosts: myServers
-  become: true
-  roles:
-  - walmartlabs.jdk

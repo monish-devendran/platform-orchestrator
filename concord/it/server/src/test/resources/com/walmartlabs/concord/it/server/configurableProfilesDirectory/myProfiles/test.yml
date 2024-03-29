@@ -1,4 +1,0 @@
-test:
-  configuration:
-    arguments:
-      name: "world"

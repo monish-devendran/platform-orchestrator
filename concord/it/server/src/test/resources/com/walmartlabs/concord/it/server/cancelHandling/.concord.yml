@@ -1,9 +1,0 @@
-flows:
-  main:
-  - ${sleep.ms(30000)}
-
-  onCancel:
-  - log: "initiator is ${initiator.username}"
-
-variables:
-  entryPoint: main

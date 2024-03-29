@@ -1,1 +1,0 @@
-select cast(?::jsonb as varchar)

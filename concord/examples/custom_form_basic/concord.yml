@@ -1,7 +1,0 @@
-flows:
-  default:
-  - form: myForm
-    fields:
-      - name: { type: "string", value: "${initiator.displayName}" }
-
-  - log: "${myForm}"

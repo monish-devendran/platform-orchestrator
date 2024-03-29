@@ -1,6 +1,0 @@
----
-- hosts: local
-  tasks:
-  - get_url:
-      url: "{{ artifactUrl }}"
-      dest: "{{ artifactDest }}"

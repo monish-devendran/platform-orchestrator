@@ -1,7 +1,0 @@
-triggers:
-  - cron:
-      spec: "*"
-      entryPoint: "main"
-      activeProfiles:
-        - "main"
-      arguments: 1

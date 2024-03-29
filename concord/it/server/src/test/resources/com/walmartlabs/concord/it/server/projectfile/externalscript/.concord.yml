@@ -1,5 +1,0 @@
-flows:
-  main:
-  - script: scripts/test.js
-  - log: bye!
-

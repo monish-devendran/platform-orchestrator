@@ -1,9 +1,0 @@
----
-- hosts: local
-  tasks:
-  - debug:
-      msg: "{{ msg1 }}"
-      verbosity: 0
-  - debug:
-      msg: "{{ msg2 }}"
-      verbosity: 0
