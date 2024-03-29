@@ -1,0 +1,9 @@
+flows:
+  default:
+    - task: docker
+      in:
+        image: "localhost:12345/non-existing"
+        pullRetryInterval: 1000
+        pullRetryCount: 2
+        cmd: |
+          echo 'Hi!'

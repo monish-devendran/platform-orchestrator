@@ -1,0 +1,12 @@
+---
+- hosts: local
+  tasks:
+  - debug:
+      msg: "First hello from ansible"
+      verbosity: 0
+    register: message
+
+  - debug:
+      msg: "Second message"
+      verbosity: 0
+    register: message2

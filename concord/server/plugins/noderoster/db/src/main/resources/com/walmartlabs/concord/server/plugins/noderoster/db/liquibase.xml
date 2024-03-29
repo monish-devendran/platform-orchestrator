@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="noderoster-10000" author="ibodrov@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <changeLogPropertyDefined property="createExtensionAvailable" value="true"/>
+        </preConditions>
+
+        <sql>
+            CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
+        </sql>
+    </changeSet>
+
+    <changeSet id="noderoster-10020" author="ybrigo@gmail.com">
+        <createTable tableName="NODE_ROSTER_HOSTS">
+            <column name="HOST_ID" type="uuid" defaultValueComputed="uuid_generate_v1()">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="NORMALIZED_HOSTNAME" type="varchar(2048)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="CREATED_AT" type="timestamp" defaultValueComputed="current_timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="noderoster-10030" author="ybrigo@gmail.com">
+        <createTable tableName="NODE_ROSTER_PROCESS_HOSTS">
+            <column name="INSTANCE_ID" type="uuid">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="INSTANCE_CREATED_AT" type="timestamp">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="HOST_ID" type="uuid">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="INITIATOR" type="varchar(64)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="INITIATOR_ID" type="uuid">
+                <constraints nullable="true"/>
+            </column>
+            <column name="PROJECT_ID" type="uuid">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="noderoster-10040" author="ybrigo@gmail.com">
+        <createTable tableName="NODE_ROSTER_HOST_FACTS">
+            <column name="INSTANCE_ID" type="uuid">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="INSTANCE_CREATED_AT" type="timestamp">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="HOST_ID" type="uuid">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="FACTS" type="jsonb">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="noderoster-10050" author="ybrigo@gmail.com">
+        <createTable tableName="NODE_ROSTER_HOST_ARTIFACTS">
+            <column name="INSTANCE_ID" type="uuid">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="INSTANCE_CREATED_AT" type="timestamp">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="HOST_ID" type="uuid">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="ARTIFACT_URL" type="varchar(1024)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="noderoster-10060" author="ibodrov@gmail.com">
+        <addColumn tableName="NODE_ROSTER_HOST_FACTS">
+            <!-- a process can produce multiple gather_facts events for each host -->
+            <column name="SEQ_ID" type="serial"/>
+        </addColumn>
+
+        <dropPrimaryKey tableName="NODE_ROSTER_HOST_FACTS"/>
+
+        <createIndex tableName="NODE_ROSTER_HOST_FACTS" indexName="IDX_NR_HF_HOST">
+            <column name="HOST_ID"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="noderoster-10070" author="ybrigo@gmail.com" runInTransaction="false">
+        <!-- skip if the table is partitioned -->
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*)
+                from pg_inherits
+                join pg_class parent ON pg_inherits.inhparent = parent.oid
+                join pg_class child ON pg_inherits.inhrelid = child.oid
+                join pg_namespace nmsp_parent ON nmsp_parent.oid = parent.relnamespace
+                join pg_namespace nmsp_child ON nmsp_child.oid = child.relnamespace
+                where parent.relname = 'node_roster_host_artifacts'
+            </sqlCheck>
+        </preConditions>
+
+        <dropPrimaryKey tableName="NODE_ROSTER_HOST_ARTIFACTS"/>
+        <createIndex tableName="NODE_ROSTER_HOST_ARTIFACTS" indexName="IDX_NR_HA_HOST">
+            <column name="HOST_ID"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- see server/db/src/main/resources/com/walmartlabs/concord/server/db/v1.58.0.xml -->
+    <changeSet id="noderoster-1580000" author="ibodrov@gmail.com">
+        <createProcedure dbms="postgresql">
+            create or replace function ts_to_tstz(t text)
+                returns bool as $$
+            declare
+                v_cnt numeric;
+            begin
+                v_cnt := 0;
+
+                update pg_attribute
+                    set atttypid = 'timestamp with time zone'::regtype
+                from pg_class
+                where attrelid = pg_class.oid
+                    and relnamespace = current_schema()::regnamespace
+                    and atttypid = 'timestamp'::regtype
+                    and relname ilike t;
+
+                get diagnostics v_cnt = row_count;
+                if v_cnt = 0 then
+                    raise warning 'Relation not found (or is already converted): %', t;
+                end if;
+
+                update pg_index
+                    set indclass = array_to_string(array_replace(indclass::oid[], 3128::oid, 3127::oid), ' ')::oidvector
+                from pg_class
+                where indrelid = pg_class.oid
+                    and relnamespace = current_schema()::regnamespace
+                    and indclass::oid[] @> ARRAY[3128::oid]
+                    and relname ilike t;
+
+                return v_cnt > 0;
+            end;
+            $$ language plpgsql
+        </createProcedure>
+    </changeSet>
+
+    <!-- non-partitioned tables -->
+
+    <!-- NODE_ROSTER_HOSTS -->
+    <changeSet id="noderoster-1580100" author="ibodrov@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <changeLogPropertyDefined property="superuserAvailable" value="true"/>
+        </preConditions>
+
+        <sql>
+            select ts_to_tstz('node_roster_hosts')
+        </sql>
+    </changeSet>
+
+    <changeSet id="noderoster-1580100-a" author="ibodrov@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <changeLogPropertyDefined property="superuserAvailable" value="false"/>
+        </preConditions>
+
+        <sql>
+            alter table NODE_ROSTER_HOSTS
+                alter column CREATED_AT type timestamptz using CREATED_AT at time zone 'UTC'
+        </sql>
+    </changeSet>
+
+    <!-- tables that might be partitioned -->
+
+    <!-- NODE_ROSTER_HOST_ARTIFACTS -->
+    <changeSet id="noderoster-1580110" author="ibodrov@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <changeLogPropertyDefined property="superuserAvailable" value="true"/>
+        </preConditions>
+
+        <sql>
+            select ts_to_tstz('node_roster_host_artifacts%')
+        </sql>
+    </changeSet>
+
+    <changeSet id="noderoster-1580110-a" author="ibodrov@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <changeLogPropertyDefined property="superuserAvailable" value="false"/>
+        </preConditions>
+
+        <sql>
+            alter table NODE_ROSTER_HOST_ARTIFACTS
+                alter column INSTANCE_CREATED_AT type timestamptz using INSTANCE_CREATED_AT at time zone 'UTC'
+        </sql>
+    </changeSet>
+
+    <!-- NODE_ROSTER_HOST_FACTS -->
+    <changeSet id="noderoster-1580120" author="ibodrov@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <changeLogPropertyDefined property="superuserAvailable" value="true"/>
+        </preConditions>
+
+        <sql>
+            select ts_to_tstz('node_roster_host_facts%')
+        </sql>
+    </changeSet>
+
+    <changeSet id="noderoster-1580120-a" author="ibodrov@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <changeLogPropertyDefined property="superuserAvailable" value="false"/>
+        </preConditions>
+
+        <sql>
+            alter table NODE_ROSTER_HOST_FACTS
+                alter column INSTANCE_CREATED_AT type timestamptz using INSTANCE_CREATED_AT at time zone 'UTC'
+        </sql>
+    </changeSet>
+
+    <!-- NODE_ROSTER_PROCESS_HOSTS -->
+    <changeSet id="noderoster-1580130" author="ibodrov@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <changeLogPropertyDefined property="superuserAvailable" value="true"/>
+        </preConditions>
+
+        <sql>
+            select ts_to_tstz('node_roster_process_hosts%')
+        </sql>
+    </changeSet>
+
+    <changeSet id="noderoster-1580130-a" author="ibodrov@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <changeLogPropertyDefined property="superuserAvailable" value="false"/>
+        </preConditions>
+
+        <sql>
+            alter table NODE_ROSTER_PROCESS_HOSTS
+                alter column INSTANCE_CREATED_AT type timestamptz using INSTANCE_CREATED_AT at time zone 'UTC'
+        </sql>
+    </changeSet>
+
+    <!-- indices -->
+
+    <changeSet id="noderoster-1580200" author="ibodrov@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <changeLogPropertyDefined property="superuserAvailable" value="true"/>
+        </preConditions>
+
+        <sql>
+            select ts_to_tstz('pk_node_roster_process_hosts')
+        </sql>
+    </changeSet>
+</databaseChangeLog>

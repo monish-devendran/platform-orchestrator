@@ -1,0 +1,17 @@
+flows:
+  default:
+  - set:
+      yamlObj:
+        values:
+        - "value_1"
+        - "value_2"
+
+  - form: testForm
+    values:
+      testValue: "${testValue}"
+  - log: "uploaded contents: ${resource.asJson(testForm.f)}"
+
+forms:
+  testForm:
+  - x: { type: "string?", allow: "${yamlObj.values}" }
+  - f: { type: "file" }

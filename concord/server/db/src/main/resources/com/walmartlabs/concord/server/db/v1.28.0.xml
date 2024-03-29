@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="1280000" author="ibodrov@gmail.com">
+        <addColumn tableName="PROCESS_QUEUE">
+            <column name="TRIGGERED_BY" type="jsonb">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- removed in 1.34.3+
+    <changeSet id="1280100" author="ybrigo@gmail.com">
+        <createTable tableName="PROCESS_EVENT_STATS">
+            <column name="INSTANCE_CREATED_DATE" type="timestamp">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="MAX_EVENT_SEQ" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    -->
+
+    <!-- removed in 1.34.3+
+    <changeSet id="1280200" author="ybrigo@gmail.com">
+        <createTable tableName="EVENT_PROCESSOR_MARKERS">
+            <column name="PROCESSOR_NAME" type="varchar(64)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="INSTANCE_CREATED_DATE" type="timestamp">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="EVENT_SEQ" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    -->
+
+    <changeSet id="1280200" author="ibodrov@gmail.com">
+        <sql>
+            create type raw_payload_mode as enum ('DISABLED', 'OWNERS', 'TEAM_MEMBERS', 'ORG_MEMBERS', 'EVERYONE')
+        </sql>
+
+        <addColumn tableName="PROJECTS">
+            <column name="RAW_PAYLOAD_MODE" type="raw_payload_mode" defaultValue="DISABLED">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="1280210" author="ibodrov@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="PROJECTS" columnName="ACCEPTS_RAW_PAYLOAD"/>
+        </preConditions>
+        <sql>
+            update PROJECTS set RAW_PAYLOAD_MODE = case
+                    when ACCEPTS_RAW_PAYLOAD is true then 'ORG_MEMBERS'::raw_payload_mode
+                    else 'DISABLED'::raw_payload_mode
+                end
+        </sql>
+    </changeSet>
+</databaseChangeLog>

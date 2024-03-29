@@ -1,0 +1,12 @@
+configuration:
+  dependencies:
+  - "mvn://com.walmartlabs.concord.plugins.basic:ansible-tasks:1.76.1"
+
+flows:
+  default:
+  - task: ansible
+    in:
+      playbook: playbook/hello.yml
+      dynamicInventoryFile: my_inventory.sh
+      extraVars:
+        greetings: "Hi there!"

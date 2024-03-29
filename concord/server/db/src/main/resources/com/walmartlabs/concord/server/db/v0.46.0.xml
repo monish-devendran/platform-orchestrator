@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="46000" author="ibodrov@gmail.com">
+        <addColumn tableName="TEAMS">
+            <column name="VISIBILITY" type="varchar(128)" defaultValue="PUBLIC">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="46010" author="ibodrov@gmail.com">
+        <dropPrimaryKey tableName="USER_TEAMS"/>
+
+        <addColumn tableName="USER_TEAMS">
+            <column name="TEAM_ROLE" type="varchar(128)" defaultValue="WRITER">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addPrimaryKey tableName="USER_TEAMS" columnNames="USER_ID, TEAM_ID, TEAM_ROLE"/>
+
+        <sql>
+            update USER_TEAMS set TEAM_ROLE = 'OWNER' where USER_ID = '230c5c9c-d9a7-11e6-bcfd-bb681c07b26c'
+        </sql>
+    </changeSet>
+
+    <changeSet id="46020" author="ibodrov@gmail.com">
+        <createTable tableName="ADMINS">
+            <column name="USER_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="ADMINS"
+                                 baseColumnNames="USER_ID"
+                                 constraintName="FK_ADMINS_U_ID"
+                                 referencedTableName="USERS"
+                                 referencedColumnNames="USER_ID"
+                                 onDelete="CASCADE"/>
+
+        <sql>
+            insert into ADMINS (USER_ID) values ('230c5c9c-d9a7-11e6-bcfd-bb681c07b26c')
+        </sql>
+    </changeSet>
+
+    <changeSet id="46100" author="ibodrov@gmail.com">
+        <addColumn tableName="PROJECTS">
+            <column name="VISIBILITY" type="varchar(128)" defaultValue="PUBLIC">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- deprecated in 1.26.0+ -->
+    <!--
+    <changeSet id="46200" author="brig@gmail.com">
+        <validCheckSum>7:4da9f8084cf605c5bb8dbf860e705266</validCheckSum>
+        <createTable tableName="LANDING_PAGE">
+            <column name="LANDING_PAGE_ID" type="uuid" defaultValueComputed="uuid_generate_v1()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PROJECT_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="REPO_ID" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="NAME" type="varchar(128)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DESCRIPTION" type="varchar(512)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ICON" type="bytea">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="LANDING_PAGE"
+                                 baseColumnNames="PROJECT_ID"
+                                 constraintName="FK_LANDING_PAGE_PROJECT_ID"
+                                 referencedTableName="PROJECTS"
+                                 referencedColumnNames="PROJECT_ID"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="LANDING_PAGE"
+                                 baseColumnNames="REPO_ID"
+                                 constraintName="FK_LANDING_PAGE_REPO_ID"
+                                 referencedTableName="REPOSITORIES"
+                                 referencedColumnNames="REPO_ID"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+    -->
+
+    <!-- deprecated in 1.58.0+ -->
+    <!--
+    <changeSet id="46300" author="ybrigo@gmail.com">
+        <addColumn tableName="REPOSITORIES">
+            <column name="PUSH_EVENT_DATE" type="timestamp" defaultValueComputed="current_timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    -->
+
+</databaseChangeLog>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="1240000" author="ibodrov@gmail.com">
+        <dropForeignKeyConstraint baseTableName="PROCESS_CHECKPOINTS"
+                                  constraintName="FK_PCHECKP_PQ_ID"/>
+    </changeSet>
+
+    <changeSet id="1240100" author="muhammad.wasi@walmart.com">
+        <addForeignKeyConstraint baseTableName="ROLE_PERMISSIONS"
+                                 baseColumnNames="ROLE_ID"
+                                 constraintName="FK_ROLE_PERMISSIONS_ROLES"
+                                 referencedTableName="ROLES"
+                                 referencedColumnNames="ROLE_ID"
+                                 onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="USER_ROLES" constraintName="FK_U_R_ROLE"/>
+        <addForeignKeyConstraint baseTableName="USER_ROLES"
+                                 baseColumnNames="ROLE_ID"
+                                 constraintName="FK_U_R_ROLE"
+                                 referencedTableName="ROLES"
+                                 referencedColumnNames="ROLE_ID"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="1240100" author="ybrigo@gmail.com">
+        <addColumn tableName="USERS">
+            <column name="DOMAIN" type="varchar(512)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="1240110" author="ybrigo@gmail.com">
+        <dropUniqueConstraint tableName="USERS" constraintName="USERS_USERNAME_KEY"/>
+        <addUniqueConstraint tableName="USERS" columnNames="USERNAME, DOMAIN, USER_TYPE"/>
+    </changeSet>
+</databaseChangeLog>

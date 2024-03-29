@@ -1,0 +1,29 @@
+configuration:
+  dependencies:
+  - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.8"
+  arguments:
+    items1:
+    - "a"
+    - "b"
+    items2:
+    - "a"
+    - "b"
+    - "c"
+    items3: [1, 2, 3] # using a different syntax to make list
+
+flows:
+  default:
+  # using expressions
+  - log: "${items3.stream().filter(i -> i % 2 == 0).toList()}"
+
+  # using Java Streams API in Groovy
+  - script: groovy
+    # calculates the difference between items1 and items2
+    body: |
+      execution.setVariable("delta",
+        items2.stream()
+              .filter { a -> !items1.contains(a) }
+              .collect())
+
+  - log: "We got ${delta}"
+

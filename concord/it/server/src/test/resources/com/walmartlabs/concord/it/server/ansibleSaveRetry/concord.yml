@@ -1,0 +1,15 @@
+flows:
+  default:
+  - task: ansible
+    in:
+      playbook: playbook/hello.yml
+      user: "aRandomUser"
+      inventory:
+        local:
+          hosts:
+            - "127.0.0.1"
+          vars:
+            ansible_connection: "garbage" # to make it fail
+      saveRetryFile: true
+      extraVars:
+        msg: "Hi there!"

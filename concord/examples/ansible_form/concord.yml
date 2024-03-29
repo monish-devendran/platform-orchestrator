@@ -1,0 +1,32 @@
+configuration:
+  # to use `ansible` task
+  dependencies:
+  - "mvn://com.walmartlabs.concord.plugins.basic:ansible-tasks:1.76.1"
+
+  arguments:
+    # default values
+    myForm:
+      myMessage: "Hello, Concord"
+
+flows:
+  default:
+  # open the form
+  - form: myForm
+
+  # call the playbook
+  - task: ansible
+    in:
+      playbook: playbook/hello.yml
+      inventory:
+        local:
+          hosts:
+          - "127.0.0.1"
+          vars:
+            ansible_connection: "local"
+      extraVars:
+        # pass the form field's value into the playbook
+        message: ${myForm.myMessage}
+
+forms:
+  myForm:
+    - myMessage: { type: "string" }

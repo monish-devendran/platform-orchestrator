@@ -1,0 +1,11 @@
+flows:
+  onTestTrigger:
+    - log: "Hello from exclusive trigger!"
+
+triggers:
+  - testTrigger:
+      entryPoint: onTestTrigger
+      key1: "value1"
+      exclusive:
+        group: "RED"
+        mode: "cancel"

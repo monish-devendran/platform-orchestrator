@@ -1,0 +1,22 @@
+configuration:
+  arguments:
+    nested:
+      value: "Hello!"
+
+flows:
+  default:
+  # read a JSON file
+  # prints out '{value:${nested.value}}'
+  - log: "${resource.asJson('my.json')}"
+
+  # read a JSON file and evaluate all expressions
+  # prints out '{value:Hello!}'
+  - log: "${resource.asJson('my.json', true)}"
+
+  # read a YAML file
+  # prints out '{value:${nested.value}}'
+  - log: "${resource.asYaml('my.yml')}"
+
+  # read a YAML file and evaluate all expressions
+  # prints out '{value:Hello!}'
+  - log: "${resource.asYaml('my.yml', true)}"

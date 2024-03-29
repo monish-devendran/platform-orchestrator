@@ -1,0 +1,24 @@
+configuration:
+  debug: true
+  entryPoint: "main-test"
+  dependencies:
+    - "d1"
+    - "d2"
+  arguments:
+    k: "v"
+  requirements:
+    k: "v1"
+  processTimeout: "PT1H"
+  exclusive:
+    group: "X"
+    mode: "cancel"
+  events:
+    recordTaskInVars: true
+    inVarsBlacklist:
+      - "pass"
+    recordTaskOutVars: true
+    outVarsBlacklist:
+      - "bass"
+    recordTaskMeta: true
+    metaBlacklist:
+      - "bass"

@@ -1,0 +1,25 @@
+configuration:
+  dependencies:
+  - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.8"
+  - "mvn://io.github.http-builder-ng:http-builder-ng-core:0.16.1"
+  - "mvn://xml-resolver:xml-resolver:1.2"
+
+flows:
+  default:
+  - script: groovy
+    body: |
+      import static groovyx.net.http.HttpBuilder.configure
+
+      def http = configure {
+        request.uri = "http://localhost:8001"
+      }
+
+      Map result = http.get(Map) {
+        request.uri.path = "/api/v1/server/version"
+      }
+
+      execution.setVariable("serverVersion", result["version"])
+
+  - log: "Server's version: ${serverVersion}"
+
+

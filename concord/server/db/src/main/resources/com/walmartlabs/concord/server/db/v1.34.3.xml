@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="1344000" author="ibodrov@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <changeLogPropertyDefined property="createExtensionAvailable" value="true"/>
+        </preConditions>
+
+        <sql>
+            CREATE EXTENSION IF NOT EXISTS "pg_trgm"
+        </sql>
+    </changeSet>
+
+    <changeSet id="1344010" author="ibodrov@gmail.com" runInTransaction="false">
+        <sql>
+            create index concurrently IDX_PROC_INITIATOR_ID on PROCESS_QUEUE (INITIATOR_ID)
+        </sql>
+    </changeSet>
+
+    <changeSet id="1344020" author="ibodrov@gmail.com" runInTransaction="false">
+        <sql>
+            create index concurrently IDX_USERS_USERNAME on USERS using gin (USERNAME gin_trgm_ops)
+        </sql>
+    </changeSet>
+
+    <changeSet id="1344030" author="ibodrov@gmail.com" runInTransaction="false">
+        <sql>
+            create index concurrently IDX_PROC_META on PROCESS_QUEUE using gin (META jsonb_path_ops)
+        </sql>
+    </changeSet>
+
+    <changeSet id="1344100" author="ybrigo@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="EVENT_PROCESSOR_MARKER"/>
+        </preConditions>
+
+        <dropTable tableName="EVENT_PROCESSOR_MARKER"/>
+    </changeSet>
+
+    <changeSet id="1344110" author="ybrigo@gmail.com">
+        <createTable tableName="EVENT_PROCESSOR_MARKER">
+            <column name="PROCESSOR_NAME" type="varchar(64)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="EVENT_SEQ" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1344120" author="ybrigo@gmail.com">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="EVENT_PROCESSOR_MARKERS"/>
+        </preConditions>
+
+        <sql>
+            insert into event_processor_marker(processor_name, event_seq)
+            select processor_name, max(event_seq) from event_processor_markers group by processor_name;
+        </sql>
+    </changeSet>
+
+    <changeSet id="1344200" author="ibodrov@gmail.com" runInTransaction="false">
+        <sql>
+            create index concurrently IDX_PROC_ENQUEUED on PROCESS_QUEUE (CURRENT_STATUS) where CURRENT_STATUS = 'ENQUEUED';
+        </sql>
+    </changeSet>
+
+    <changeSet id="1344300" author="ibodrov@gmail.com" runInTransaction="false">
+        <!-- skip if the table is partitioned -->
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*)
+                from pg_inherits
+                    join pg_class parent ON pg_inherits.inhparent = parent.oid
+                    join pg_class child ON pg_inherits.inhrelid = child.oid
+                    join pg_namespace nmsp_parent ON nmsp_parent.oid = parent.relnamespace
+                    join pg_namespace nmsp_child ON nmsp_child.oid = child.relnamespace
+                where parent.relname = 'process_checkpoints'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            create index concurrently IDX_CHECKPOINTS_PROC_ID on PROCESS_CHECKPOINTS (INSTANCE_ID)
+        </sql>
+    </changeSet>
+</databaseChangeLog>

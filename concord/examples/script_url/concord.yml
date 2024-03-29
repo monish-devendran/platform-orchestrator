@@ -1,0 +1,10 @@
+flows:
+  default:
+  # the script file has to be served by some external web server
+  - script: "http://localhost:8000/example.groovy"
+
+configuration:
+  dependencies:
+  - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.8"
+  arguments:
+    name: "${initiator.displayName}"

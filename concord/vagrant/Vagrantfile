@@ -1,0 +1,28 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+image_prefix = ENV['IMAGE_PREFIX'] || "walmartlabs"
+use_local_images = ENV['USE_LOCAL_IMAGES'] || false
+
+Vagrant.configure("2") do |config|
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 3072
+    v.cpus = 2
+  end
+
+  config.vm.box = "centos/7"
+
+  config.vm.network "forwarded_port", guest: 8001, host: 18001
+  config.vm.network "forwarded_port", guest: 8080, host: 18080
+
+  config.vm.provision "shell",
+    inline: "yum install -y ansible"
+
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "playbook.yml"
+    ansible.extra_vars = {
+        image_prefix: image_prefix,
+        use_local_images: use_local_images,
+    }
+  end
+end

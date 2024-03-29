@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <!-- TEAMS -->
+
+    <changeSet id="45000" author="ibodrov@gmail.com">
+        <createTable tableName="TEAMS" remarks="User teams">
+            <column name="TEAM_ID" type="uuid" defaultValueComputed="uuid_generate_v1()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="TEAM_NAME" type="varchar(128)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="DESCRIPTION" type="varchar(2048)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="IS_ACTIVE" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="45010" author="ibodrov@gmail.com">
+        <insert tableName="TEAMS">
+            <column name="TEAM_ID">00000000-0000-0000-0000-000000000000</column>
+            <column name="TEAM_NAME">Default</column>
+            <column name="DESCRIPTION">Default team</column>
+        </insert>
+    </changeSet>
+
+    <changeSet id="45020" author="ibodrov@gmail.com">
+        <addColumn tableName="PROJECTS">
+            <column name="TEAM_ID" type="uuid" defaultValueComputed="'00000000-0000-0000-0000-000000000000'::uuid">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="PROJECTS"
+                                 baseColumnNames="TEAM_ID"
+                                 constraintName="FK_PRJ_TEAM_ID"
+                                 referencedTableName="TEAMS"
+                                 referencedColumnNames="TEAM_ID"/>
+    </changeSet>
+
+    <changeSet id="45030" author="ibodrov@gmail.com">
+        <addColumn tableName="SECRETS">
+            <column name="TEAM_ID" type="uuid" defaultValueComputed="'00000000-0000-0000-0000-000000000000'::uuid">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint baseTableName="SECRETS"
+                                 baseColumnNames="TEAM_ID"
+                                 constraintName="FK_PRJ_TEAM_ID"
+                                 referencedTableName="TEAMS"
+                                 referencedColumnNames="TEAM_ID"/>
+    </changeSet>
+
+    <changeSet id="45040" author="ibodrov@gmail.com">
+        <createTable tableName="USER_TEAMS">
+            <column name="USER_ID" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="TEAM_ID" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="USER_TEAMS"
+                                 baseColumnNames="USER_ID"
+                                 constraintName="FK_USR_TEAMS_USR"
+                                 referencedTableName="USERS"
+                                 referencedColumnNames="USER_ID"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint baseTableName="USER_TEAMS"
+                                 baseColumnNames="TEAM_ID"
+                                 constraintName="FK_USR_TEAMS_TEAM"
+                                 referencedTableName="TEAMS"
+                                 referencedColumnNames="TEAM_ID"
+                                 onDelete="CASCADE"/>
+
+        <sql>
+            insert into USER_TEAMS
+            select USER_ID, '00000000-0000-0000-0000-000000000000'::uuid as TEAM_ID from USERS
+        </sql>
+    </changeSet>
+
+    <!-- USERS -->
+
+    <changeSet id="45500" author="ibodrov@gmail.com">
+        <addDefaultValue tableName="USERS" columnName="USER_ID" defaultValueComputed="uuid_generate_v1()"/>
+    </changeSet>
+
+    <!-- API_KEYS -->
+
+    <changeSet id="45600" author="ibodrov@gmail.com">
+        <addDefaultValue tableName="API_KEYS" columnName="KEY_ID" defaultValueComputed="uuid_generate_v1()"/>
+    </changeSet>
+
+    <!-- INVENTORY -->
+
+    <changeSet id="45700" author="ybrigo@gmail.com">
+        <createTable tableName="INVENTORIES" remarks="Inventories">
+            <column name="INVENTORY_ID" type="uuid" defaultValueComputed="uuid_generate_v1()"
+                    remarks="Unique ID of the inventory">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="INVENTORY_NAME" type="varchar(128)" remarks="Unique name of the inventory">
+                <constraints unique="true" nullable="false"/>
+            </column>
+
+            <column name="PARENT_INVENTORY_ID" type="uuid" remarks="ID of the parent inventory">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="TEAM_ID" type="uuid" remarks="FK to a Concord team"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="45701" author="ybrigo@gmail.com">
+        <addForeignKeyConstraint constraintName="FK_INVENTORIES_PARENT"
+                                 baseTableName="INVENTORIES" baseColumnNames="PARENT_INVENTORY_ID"
+                                 referencedTableName="INVENTORIES" referencedColumnNames="INVENTORY_ID"
+                                 onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint constraintName="FK_INVENTORIES_TEAMS"
+                                 baseTableName="INVENTORIES" baseColumnNames="TEAM_ID"
+                                 referencedTableName="TEAMS" referencedColumnNames="TEAM_ID"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="45702" author="ybrigo@gmail.com">
+        <createTable tableName="INVENTORY_DATA" remarks="Inventory data">
+            <column name="INVENTORY_ID" type="uuid" remarks="FK to an inventory">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="ITEM_PATH" type="varchar(1024)" remarks="Unique (for an inventory) path to an entry">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="ITEM_DATA" type="jsonb" remarks="JSON data">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="45703" author="ybrigo@gmail.com">
+        <addForeignKeyConstraint constraintName="FK_INVENTORY_DATA_INVENTORY"
+                                 baseTableName="INVENTORY_DATA" baseColumnNames="INVENTORY_ID"
+                                 referencedTableName="INVENTORIES" referencedColumnNames="INVENTORY_ID"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+
+    <changeSet id="45704" author="ybrigo@gmail.com">
+        <createTable tableName="INVENTORY_QUERIES" remarks="Inventory queries">
+            <column name="QUERY_ID" type="uuid" defaultValueComputed="uuid_generate_v1()" remarks="Unique query index">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="INVENTORY_ID" type="uuid" remarks="FK to an inventory">
+                <constraints nullable="false"/>
+            </column>
+            <column name="QUERY_NAME" type="varchar(256)" remarks="Unique (for an inventory) query name">
+                <constraints nullable="false"/>
+            </column>
+            <column name="QUERY_TEXT" type="varchar(4000)" remarks="Query text">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="45705" author="ybrigo@gmail.com">
+        <addForeignKeyConstraint constraintName="FK_INVENTORY_QUERIES_INVENTORY"
+                                 baseTableName="INVENTORY_QUERIES" baseColumnNames="INVENTORY_ID"
+                                 referencedTableName="INVENTORIES" referencedColumnNames="INVENTORY_ID"
+                                 onDelete="CASCADE"/>
+
+        <addUniqueConstraint constraintName="UNQ_INVENTORY_QUERIES"
+                             tableName="INVENTORY_QUERIES" columnNames="INVENTORY_ID, QUERY_NAME"/>
+    </changeSet>
+</databaseChangeLog>

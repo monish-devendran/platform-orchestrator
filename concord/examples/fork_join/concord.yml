@@ -1,0 +1,45 @@
+flows:
+  default:
+  # "forks" the current process as multiple subprocesses
+  - task: concord
+    in:
+      action: fork
+      tags: forkJoinChild
+      # disable the `onCancel` handler, because it's going to handle
+      # the parent's cancellation only
+      disableOnCancel: true
+      forks:
+      # spawn multiple jobs with different parameters
+      - entryPoint: aJob
+        arguments:
+          color: "red"
+      - entryPoint: aJob
+        arguments:
+          color: "green"
+      - entryPoint: aJob
+        arguments:
+            color: "blue"
+
+
+    # out variable "myJobs" will contain a list of process IDs
+    out:
+      myJobs: ${jobs}
+
+  - log: "Done! Status of the jobs: ${concord.waitForCompletion(myJobs)}"
+
+  aJob:
+  - log: "FORK (${color}) starting..."
+  - ${sleep.ms(15000)}
+  - log: "...done!"
+
+  onCancel:
+  # find and cancel the tagged subprocesses
+  - task: concord
+    in:
+      action: kill
+      # because onCancel is a separate subprocess, we need to use
+      # 'parentInstanceId'
+      instanceId: "${concord.listSubprocesses(parentInstanceId, 'forkJoinChild')}"
+      sync: true
+  - log: "Jobs are cancelled!"
+

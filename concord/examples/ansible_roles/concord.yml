@@ -1,0 +1,26 @@
+configuration:
+  dependencies:
+    - "mvn://com.walmartlabs.concord.plugins.basic:ansible-tasks:1.76.1"
+
+flows:
+  default:
+  - task: ansible
+    in:
+      # location of the playbook
+      playbook: "playbook/hello.yml"
+
+      # remote server auth
+      auth:
+        privateKey:
+          # remote user's name
+          user: "app"
+          # remote server's key
+          secret:
+            name: "testKey"
+
+      roles:
+      - name: "devtools/tekton-ansible"
+      inventory:
+        myServers:
+          hosts:
+          - "myRemoteHost"

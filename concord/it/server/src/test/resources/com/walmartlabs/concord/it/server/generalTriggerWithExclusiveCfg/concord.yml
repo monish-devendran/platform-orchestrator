@@ -1,0 +1,14 @@
+configuration:
+  exclusive:
+    group: "RED"
+    mode: "cancel"
+
+flows:
+  onTestTrigger:
+    - log: "Hello from exclusive trigger!"
+    - "${sleep.ms(10000)}"
+
+triggers:
+  - testTrigger:
+      entryPoint: onTestTrigger
+      key1: "value1"

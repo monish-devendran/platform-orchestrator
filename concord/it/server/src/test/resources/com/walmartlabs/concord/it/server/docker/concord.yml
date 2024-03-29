@@ -1,0 +1,11 @@
+flows:
+  main:
+  - docker: ${image}
+    debug: true
+    forcePull: false
+    cmd: echo "Hello, ${name}"
+
+variables:
+  entryPoint: main
+  arguments:
+    name: "world"

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="93000" author="ybrigo@gmail.com">
+        <createTable tableName="TASKS">
+            <column name="TASK_ID" type="varchar(64)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="TASK_INTERVAL" type="bigint" remarks="Start interval (in seconds)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="TASK_STATUS" type="varchar(32)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="STARTED_AT" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+            <column name="FINISHED_AT" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="93100" author="ybrigo@gmail.com">
+        <addColumn tableName="TASKS">
+            <column name="LAST_UPDATED_AT" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="93500" author="ibodrov@gmail.com">
+        <addColumn tableName="PROCESS_STATE">
+            <column name="INSTANCE_CREATED_AT" type="timestamp" remarks="Same as PROCESS_QUEUE.CREATED_AT">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <sql>
+            lock table PROCESS_STATE;
+            update PROCESS_STATE s set INSTANCE_CREATED_AT = (select CREATED_AT from PROCESS_QUEUE q where q.INSTANCE_ID = s.INSTANCE_ID);
+        </sql>
+
+        <addNotNullConstraint tableName="PROCESS_STATE" columnName="INSTANCE_CREATED_AT"/>
+
+        <dropPrimaryKey tableName="PROCESS_STATE"/>
+
+        <addPrimaryKey tableName="PROCESS_STATE" columnNames="INSTANCE_ID, INSTANCE_CREATED_AT, ITEM_PATH"/>
+    </changeSet>
+</databaseChangeLog>

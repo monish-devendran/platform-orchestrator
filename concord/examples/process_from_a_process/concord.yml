@@ -1,0 +1,10 @@
+flows:
+  default:
+  # executes the provided payload archive as a child process
+  - task: concord
+    in:
+      action: start
+      archive: example.zip
+      # wait for completion
+      sync: true
+  - log: "Done! ${jobs[0]} is completed"

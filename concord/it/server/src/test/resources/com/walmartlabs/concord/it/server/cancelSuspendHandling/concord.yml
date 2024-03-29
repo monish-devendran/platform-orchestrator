@@ -1,0 +1,17 @@
+configuration:
+  arguments:
+    bValue: "still here"
+
+flows:
+  default:
+  - form: myForm
+
+  onCancel:
+  - call: testFlow
+
+  testFlow:
+  - log: "${aValue} ${bValue}"
+
+forms:
+  myForm:
+  - firstName: { type: "string" }

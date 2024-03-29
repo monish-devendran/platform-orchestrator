@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <mirrors>
+        <mirror>
+            <id>walmart-gec</id>
+            <mirrorOf>external:*</mirrorOf>
+	        <url>${env.MAVEN_MIRROR}</url>
+        </mirror>
+    </mirrors>
+
+    <servers>
+        <server>
+            <id>walmart-gec</id>
+            <username>${env.DEPLOYMENT_USERNAME}</username>
+            <password>${env.DEPLOYMENT_PASSWORD}</password>
+        </server>
+    </servers>
+
+    <profiles>
+        <profile>
+            <id>looper</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <scm.connection>${env.SCM_CONNECTION}</scm.connection>
+            </properties>
+            <repositories>
+                <repository>
+                    <id>central</id>
+                    <url>http://central</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>central</id>
+                    <url>http://central</url>
+                    <releases>
+                        <enabled>true</enabled>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+
+        <profile>
+            <id>walmart</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <node.downloadRoot>${env.NODE_DOWNLOAD_URL}</node.downloadRoot>
+                <npm.installCmd>${env.NPM_INSTALL_CMD}</npm.installCmd>
+
+                <public.serverId>walmart-gec</public.serverId>
+                <public.nexusUrl>${env.NEXUS_URL}</public.nexusUrl>
+                <public-release.serverId>${public.serverId}</public-release.serverId>
+                <public-release.url>${public.nexusUrl}/content/repositories/devtools</public-release.url>
+                <public-snapshot.serverId>${public.serverId}</public-snapshot.serverId>
+                <public-snapshot.url>${public.nexusUrl}/content/repositories/devtools-snapshots</public-snapshot.url>
+
+                <site.id>mvn-site</site.id>
+                <site.url>${env.MAVEN_SITE_URL}</site.url>
+
+                <agent.image>${env.AGENT_IMAGE}</agent.image>
+                <ansible.image>${env.ANSIBLE_IMAGE}</ansible.image>
+                <console.image>${env.CONSOLE_IMAGE}</console.image>
+                <db.image>${env.DB_IMAGE}</db.image>
+                <dind.image>${env.DIND_IMAGE}</dind.image>
+                <oldap.image>${env.OLDAP_IMAGE}</oldap.image>
+                <s3mock.image>${env.S3MOCK_IMAGE}</s3mock.image>
+                <selenium.image>${env.SELENIUM_IMAGE}</selenium.image>
+                <server.image>${env.SERVER_IMAGE}</server.image>
+                <socat.image>${env.SOCAT_IMAGE}</socat.image>
+            </properties>
+        </profile>
+    </profiles>
+</settings>

@@ -1,0 +1,18 @@
+configuration:
+  dependencies:
+  - "mvn://org.codehaus.groovy:groovy-all:pom:2.5.8"
+
+flows:
+  default:
+  - script: groovy
+    body: |
+      execution.setVariable("x", 123)
+
+  - script: groovy
+    body: |
+      // variables can be accessed via the context
+      println execution.getVariable("x")
+
+      // ...or used directly
+      println x
+

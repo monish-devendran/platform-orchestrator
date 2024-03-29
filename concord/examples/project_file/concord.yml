@@ -1,0 +1,13 @@
+configuration:
+  arguments:
+    name: stranger
+
+profiles:
+  example:
+    configuration:
+      arguments:
+        name: world
+
+flows:
+  default:
+  - log: Hello, ${name}

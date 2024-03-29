@@ -1,0 +1,5 @@
+flows:
+  main:
+    - checkpoint: "ZZZ"
+      meta:
+        m1: "v1"

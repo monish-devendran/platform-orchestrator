@@ -1,0 +1,12 @@
+imports:
+  - git:
+      url: "{{gitUrl}}"
+
+flows:
+  default:
+    - log: "Hello, ${name}!"
+    - call: flowFromTemplate
+
+configuration:
+  arguments:
+    name: "Concord"

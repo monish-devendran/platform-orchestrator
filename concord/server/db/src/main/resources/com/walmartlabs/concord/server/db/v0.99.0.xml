@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="99000" author="ibodrov@gmail.com">
+        <sql>
+            lock table PROCESS_EVENTS;
+
+            alter table PROCESS_EVENTS add column INSTANCE_CREATED_AT timestamp;
+            update PROCESS_EVENTS as pe set INSTANCE_CREATED_AT = (select CREATED_AT from PROCESS_QUEUE as pq where pq.INSTANCE_ID = pe.INSTANCE_ID);
+            delete from PROCESS_EVENTS where INSTANCE_CREATED_AT is null;
+        </sql>
+
+        <addNotNullConstraint tableName="PROCESS_EVENTS" columnName="INSTANCE_CREATED_AT"/>
+
+        <dropIndex tableName="PROCESS_EVENTS" indexName="IDX_PROC_EV_I_ID_DT_TYPE"/>
+
+        <createIndex tableName="PROCESS_EVENTS" indexName="IDX_PROC_EVENTS">
+            <column name="INSTANCE_ID"/>
+            <column name="INSTANCE_CREATED_AT"/>
+            <column name="EVENT_DATE"/>
+            <column name="EVENT_TYPE"/>
+        </createIndex>
+    </changeSet>
+
+    <!-- moved into server plugins
+    <changeSet id="99100" author="ybrigo@gmail.com">
+        <createTable tableName="ANSIBLE_HOSTS">
+            <column name="INSTANCE_ID" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="INSTANCE_CREATED_AT" type="timestamp">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="HOST" type="varchar(1024)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="HOST_GROUP" type="varchar(1024)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="EVENT_SEQ" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="STATUS" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DURATION" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    -->
+
+    <!-- removed in 1.0.0+
+    <changeSet id="99200" author="ybrigo@gmail.com">
+        <createTable tableName="EVENT_PROCESSOR_MARKERS">
+            <column name="PROCESSOR_NAME" type="varchar(64)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="INSTANCE_CREATED_AT" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+            <column name="EVENT_SEQ" type="bigint">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <insert tableName="EVENT_PROCESSOR_MARKERS">
+            <column name="PROCESSOR_NAME" value="ansible-event-processor"/>
+        </insert>
+    </changeSet>
+    -->
+
+    <changeSet id="99300" author="ibodrov@gmail.com">
+        <createIndex tableName="PROCESS_EVENTS" indexName="IDX_PROC_EVENTS_FOLDING">
+            <column name="EVENT_SEQ"/>
+            <column name="EVENT_TYPE"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="99400" author="ybrigo@gmail.com">
+        <addColumn tableName="POLICIES">
+            <column name="PARENT_POLICY_ID" type="uuid">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <addForeignKeyConstraint constraintName="FK_POLICIES_PARENT"
+                                 baseTableName="POLICIES" baseColumnNames="PARENT_POLICY_ID"
+                                 referencedTableName="POLICIES" referencedColumnNames="POLICY_ID"
+                                 onDelete="SET NULL"/>
+    </changeSet>
+</databaseChangeLog>

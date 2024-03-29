@@ -1,0 +1,23 @@
+configuration:
+  dependencies:
+  - "mvn://com.walmartlabs.concord.plugins.basic:ansible-tasks:1.76.1"
+
+flows:
+  default:
+  - task: ansible
+    in:
+      # specify the docker image to use
+      # add a prefix to use an alternative registry
+      dockerImage: "walmartlabs/concord-ansible:latest"
+      # rest of the parameters are the usual
+      playbook: playbook/hello.yml
+      debug: true
+      verbose: 3
+      inventory:
+        local:
+          hosts:
+          - "127.0.0.1"
+          vars:
+            ansible_connection: "local"
+      extraVars:
+        greetings: "Hi there!"

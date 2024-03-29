@@ -1,0 +1,9 @@
+flows:
+  main:
+    - name: "expression-call"
+      expr: "${boo}"
+      out: "result"
+      meta:
+        m1: "v1"
+      error:
+        - "${booError}"

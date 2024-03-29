@@ -1,0 +1,18 @@
+{{> header}}
+<div class="ui negative message">
+    <div class="header">Error</div>
+    <p>{{message}}</p>
+    {{#instanceId}}
+    <p><a href="/#/process/{{instanceId}}">Check the status</a></p>
+    {{/instanceId}}
+</div>
+
+{{#stacktrace}}
+<div class="ui divider"></div>
+
+<div class="ui segment" style="font-family: monospace; white-space: pre-wrap; overflow-x: scroll">
+    {{stacktrace}}
+</div>
+{{/stacktrace}}
+
+{{> footer}}

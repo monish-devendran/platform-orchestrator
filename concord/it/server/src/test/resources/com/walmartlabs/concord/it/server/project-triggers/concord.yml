@@ -1,0 +1,18 @@
+flows:
+  onPush:
+  - log: "onPush!"
+
+triggers:
+  - github:
+      entryPoint: onPush
+      conditions:
+        type: "push"
+        branch: "foo"
+  - github:
+      entryPoint: onPush
+      conditions:
+        type: "push"
+        branch: "foo2"
+  - oneops:
+      org: "myOrg"
+      entryPoint: onPush

@@ -1,0 +1,11 @@
+flows:
+  default:
+  - try:
+    - log: "Url is: ${url}"
+    - log: "${http.asString( url )}"
+    error:
+    - log: "Gotcha! ${lastError}"
+
+configuration:
+  arguments:
+    url: "http://localhost:8001"

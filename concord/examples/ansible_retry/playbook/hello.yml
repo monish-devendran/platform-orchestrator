@@ -1,0 +1,10 @@
+---
+- hosts: local
+  tasks:
+  - debug:
+      msg: "makeItFail={{ makeItFail }}"
+      verbosity: 0
+
+  - fail:
+      msg: "Making it fail"
+    when: (makeItFail is defined) and (makeItFail) and (inventory_hostname == "127.0.0.3") # simulate a failure on one of the hosts
