@@ -7,13 +7,15 @@ import:
 # Common variables for all components in this GCP project
 vars:
   tenant: pubsub
-  project_id: "cf-source-416306"
+  project_id: "cf-triggers"
+  akeyless_secret_path: "/GCP/Secrets/cf-triggers/tf-cf-triggers"
 
 # https://yaml-multiline.info/
 components:
   terraform:
     pubsub/customer1/topic:
       metadata:
+        terraform_workspace: "new-force"
         component: pubsub
         inherits:
           - pubsub/defaults
@@ -23,7 +25,17 @@ components:
           key1: value1
           key2: value2
 
-
+    pubsub/customer2/topic:
+      metadata:
+        terraform_workspace: "customer2-workspace"
+        component: pubsub
+        inherits:
+          - pubsub/defaults
+      vars:
+        topic_name: customer2
+        labels:
+          key1: value1
+          key2: value2
 
 
 # components:
