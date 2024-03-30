@@ -1,4 +1,4 @@
 provider "google" {
   project     = var.project_id
-  credentials = data.akeyless_secret.secret.value
+  credentials = module.akeyless_secret_manager.credentials.value
 }

@@ -20,7 +20,7 @@ variable "project_id" {
 variable "akeyless_secret_path" {
   description = "(Required) GCP service account path"  
   type        = string
-  default = null
+  default     = null
 }
 # variable "region" {
 #   description = "(Required) Resource region"
