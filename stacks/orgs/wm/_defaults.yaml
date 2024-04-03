@@ -21,7 +21,13 @@ terraform:
       # https://pkg.go.dev/time#pkg-constants
       provisioned_at: '{{ dateInZone "2006-01-02T15:04:05Z07:00" (now) "UTC" }}'
 
-
+  backend_type: cloud
+  backend:
+    cloud:
+      organization: tf-paas
+      hostname: app.terraform.io
+      workspaces:
+       name: "{{ .workspace }}"
 
   # # Terraform backend
   # backend_type: cloud
